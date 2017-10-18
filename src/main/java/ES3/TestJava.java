@@ -1,5 +1,7 @@
 package ES3;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,7 +24,7 @@ public class TestJava {
             if( !(m.group().contains("class=")&&(m.group().contains("ng-untouched")||m.group().contains("ng-touched")||m.group().contains("ng-pristine")||m.group().contains("ng-dirty")||m.group().contains("ng-invalid")||m.group().contains("ng-invalid")))){
                 parts.add(m.group());
             }
-
+            System.out.println("Testing Numberfield\n" + "mandatory");
 
         }
         System.out.println(parts.toString());
@@ -38,6 +40,7 @@ public class TestJava {
             binList.add(String.format("%0"+amountElements+"d",Integer.parseInt(Integer.toBinaryString(i))));
         }
         String tagName = "input";
+
         for(int x=0;x<totalCombinations-1;x++){//last value is 00000 so that's why totalcombinations-1
             StringBuilder newString = new StringBuilder(tagName);
             for(int i=0;i<amountElements;i++){

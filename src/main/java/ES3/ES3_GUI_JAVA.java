@@ -66,7 +66,7 @@ public class ES3_GUI_JAVA extends Application {
         //Button button06MouseClick = new Button("MouseClick");
         Button button09Report = new Button("Report");
         final Button button11SpockGet = new Button("TRYx!");
-        final Button button12SwitchToZero =     new Button("SWITCH TO IFRAME 0 ZTC2");
+        final Button button12SwitchToZero = new Button("SWITCH TO IFRAME 0 ZTC2");
         final Button button13SwitchToNewForms = new Button("SWITCH TO NEW ANGULAR FORM");
 //-------------------------------
         final CheckBox checkbox1 = new CheckBox("PNG");//.setselected?
@@ -174,19 +174,9 @@ public class ES3_GUI_JAVA extends Application {
         final TextArea outputField1ContentItem = new TextArea("click button to get new result");
         final TextField outputField1ActionText = new TextField("click button to get new result");
         final TextField outputFieldCssTops[] = new TextField[5];
-        for(int i=0;i<outputFieldCssTops.length;i++){
-            outputFieldCssTops[i]=new TextField("?");//@FindBy(css = "")
+        for (int i = 0; i < outputFieldCssTops.length; i++) {
+            outputFieldCssTops[i] = new TextField("?");
         }
-//        final TextField outputFieldCssTop2 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop1 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop3 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop4 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop5 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop6 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop7 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop8 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop9 = new TextField("@FindBy(css = \"\")");
-//        final TextField outputFieldCssTop10 = new TextField("@FindBy(css = \"\")");
         outputField1ContentItem.setMaxHeight(55);
         outputField1ContentItem.setMinHeight(55);
         inputField01URL.setAlignment(Pos.TOP_LEFT);
@@ -211,7 +201,8 @@ public class ES3_GUI_JAVA extends Application {
                         "name",
                         "partialLinkText",
                         "tagName",
-                        "xpath"
+                        "xpath",
+                        "JAVA CODE"
                 );
         final ComboBox comboBoxSelectors = new ComboBox(optionsSelectors);
         comboBoxSelectors.setMaxWidth(150);
@@ -244,7 +235,7 @@ public class ES3_GUI_JAVA extends Application {
 //--------------------------------
         hBox1url.getChildren().addAll(inputField01URL, button01OpenSession, button02CloseSession);
         hBox2genXpathToCss.getChildren().addAll(inputField05css1/*, inputField02css2*/, button03GenerateXpathToCss);
-        vBox1.getChildren().addAll(outputFieldCssTops[0],outputFieldCssTops[1],outputFieldCssTops[2],outputFieldCssTops[3],outputFieldCssTops[4]);
+        vBox1.getChildren().addAll(outputFieldCssTops[0], outputFieldCssTops[1], outputFieldCssTops[2], outputFieldCssTops[3], outputFieldCssTops[4]);
         hBox3becameVBox.getChildren().addAll(comboBoxSelectors, inputField02UserInputString,/*inputField05gebAction,*/comboBoxActions, inputField03ExtraUserString, hBox5Try);
         //vBox2.getChildren().add(outText2);
         vBox2.getChildren().add(outText3);
@@ -255,7 +246,7 @@ public class ES3_GUI_JAVA extends Application {
         vBox2.setMaxHeight(800);
         vBox2.setMinHeight(800);
         vBox2.setFillWidth(true);
-        hBox0switchboxes.getChildren().addAll(button12SwitchToZero,button13SwitchToNewForms);
+        hBox0switchboxes.getChildren().addAll(button12SwitchToZero, button13SwitchToNewForms);
 
 //--------------------------------
         Arrays.fill(outputs, "---");
@@ -324,9 +315,9 @@ public class ES3_GUI_JAVA extends Application {
                     Properties propertiesConnection = new Properties();
                     propertiesConnection.load(new FileInputStream(resourcePath));
                     JavaBrowserGroovyshellDaoES3.startSeleniumConnection(propertiesConnection.getProperty("url"));
-                    groovybrowser.doGebSpockActionOnShell("id", "username", "sendKeys(\"" + propertiesConnection.getProperty("username") + "\")", inputField04WishedVarName.getText(),"normal");
-                    groovybrowser.doGebSpockActionOnShell("id", "password", "sendKeys(\"" + propertiesConnection.getProperty("password") + "\")", inputField04WishedVarName.getText(),"normal");
-                    groovybrowser.doGebSpockActionOnShell("id", "loginBtn", "click()", inputField04WishedVarName.getText(),"normal");
+                    groovybrowser.doGebSpockActionOnShell("id", "username", "sendKeys(\"" + propertiesConnection.getProperty("username") + "\")", inputField04WishedVarName.getText(), "normal");
+                    groovybrowser.doGebSpockActionOnShell("id", "password", "sendKeys(\"" + propertiesConnection.getProperty("password") + "\")", inputField04WishedVarName.getText(), "normal");
+                    groovybrowser.doGebSpockActionOnShell("id", "loginBtn", "click()", inputField04WishedVarName.getText(), "normal");
                     button02CloseSession.setDisable(false);
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -349,6 +340,19 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
+        comboBoxActions.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                try {
+                    if (comboBoxActions.getValue().toString().contains("STRING")) {
+                        inputField03ExtraUserString.setDisable(false);
+                    } else {
+                        inputField03ExtraUserString.setDisable(true);
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
         comboBoxActions.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
@@ -381,7 +385,7 @@ public class ES3_GUI_JAVA extends Application {
                     }
 
                     //System.out.println("CHECK01 = " + requestedAction);
-                    String[] result = groovybrowser.doGebSpockActionOnShell(comboBoxSelectors.getValue().toString(), inputField02UserInputString.getText(), requestedAction, inputField04WishedVarName.getText(),"normal");
+                    String[] result = groovybrowser.doGebSpockActionOnShell(comboBoxSelectors.getValue().toString(), inputField02UserInputString.getText(), requestedAction, inputField04WishedVarName.getText(), "normal");
 
                     outputField1ActionText.setText(result[1]);
                     outputField1ContentItem.setText(result[0]);
@@ -427,12 +431,12 @@ public class ES3_GUI_JAVA extends Application {
             public void handle(ActionEvent e) {
                 outText2.setText("");
                 for (int i = 0; i < outputFieldCssTops.length; i++) {
-                        outputFieldCssTops[i].setText("?");
+                    outputFieldCssTops[i].setText("?");
 
                 }
                 try {
                     inputField05css1.setText(inputField05css1.getText().replaceAll("\"", "'"));
-                    String[] result = groovybrowser.doGebSpockActionOnShell("xpath", inputField05css1.getText(), "getAttribute(\"outerHTML\")", inputField04WishedVarName.getText(),"normal");
+                    String[] result = groovybrowser.doGebSpockActionOnShell("xpath", inputField05css1.getText(), "getAttribute(\"outerHTML\")", inputField04WishedVarName.getText(), "normal");
                     for (String receivedResults : result) {
                         System.out.println(receivedResults);
                     }
@@ -445,17 +449,16 @@ public class ES3_GUI_JAVA extends Application {
                         outText2.setText("Results for generating Xpath to CSS:");
                         int topCounter = 0;
                         for (int i = 0; i < generateresult.length - 1; i++) {
-                            if(generateresult[i][1].equals("Action successful")&&generateresult[i][2].equals("1")&&topCounter<outputFieldCssTops.length){
+                            if (generateresult[i][1].equals("Action successful") && generateresult[i][2].equals("1") && topCounter < outputFieldCssTops.length) {
                                 outputFieldCssTops[topCounter++].setText(generateresult[i][0]);
                             }
                             outText2.setText(outText2.getText() + "\n\n" + generateresult[i][0]);
-                            outText2.setText(outText2.getText() + "\n(RESULT=" + generateresult[i][1]+")");
-                            outText2.setText(outText2.getText() + "\n(COUNT=" + generateresult[i][2]+")");
+                            outText2.setText(outText2.getText() + "\n(RESULT=" + generateresult[i][1] + ")");
+                            outText2.setText(outText2.getText() + "\n(COUNT=" + generateresult[i][2] + ")");
                         }
 
-                    }
-                    else{
-                        outText2.setText(result[3]+" :\n\n" + inputField05css1 + "\n\n" + result[2]);
+                    } else {
+                        outText2.setText(result[3] + " :\n\n" + inputField05css1 + "\n\n" + result[2]);
                     }
 
                 } catch (Exception e1) {
@@ -467,7 +470,7 @@ public class ES3_GUI_JAVA extends Application {
         button12SwitchToZero.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
-                    String[] result = groovybrowser.doGebSpockActionOnShell("","","","","switchToZero");
+                    String[] result = groovybrowser.doGebSpockActionOnShell("", "", "", "", "switchToZero");
 
                     switch (result[3]) {
                         case "Action successful":
@@ -499,7 +502,7 @@ public class ES3_GUI_JAVA extends Application {
         button13SwitchToNewForms.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
-                    String[] result = groovybrowser.doGebSpockActionOnShell("","","","","switchToNewForm");
+                    String[] result = groovybrowser.doGebSpockActionOnShell("", "", "", "", "switchToNewForm");
 
                     switch (result[3]) {
                         case "Action successful":
