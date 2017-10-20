@@ -1,6 +1,8 @@
 package ES3;
 
+import groovyjarjarantlr.StringUtils;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Properties;
+
 
 
 /**
@@ -65,7 +68,7 @@ public class ES3_GUI_JAVA extends Application {
         //Button button05InfoAttribute = new Button("Attribute info");
         //Button button06MouseClick = new Button("MouseClick");
         Button button09Report = new Button("Report");
-        final Button button11SpockGet = new Button("TRYx!");
+        final Button button11TrySelector = new Button("TRYx!");
         final Button button12SwitchToZero = new Button("SWITCH TO IFRAME 0 ZTC2");
         final Button button13SwitchToNewForms = new Button("SWITCH TO NEW ANGULAR FORM");
 //-------------------------------
@@ -91,19 +94,19 @@ public class ES3_GUI_JAVA extends Application {
         hBox1url.setSpacing(3);
         vBox5.setSpacing(3);
         hBox1url.setMinWidth(valueWidth);
-        VBox vBox1 = new VBox(40);//voor knoppen Driver
-        vBox1.setMinHeight(350);
-        vBox1.setMaxHeight(350);
-        vBox1.setMaxWidth(valueWidth);
-        vBox1.setMinWidth(valueWidth);
-        vBox1.setSpacing(5);
-        VBox vBox2 = new VBox(40);//voor outText2
-        VBox vBox3 = new VBox(40);//voor knoppen GebSpock
-        vBox3.setSpacing(5);
-        vBox3.setMinHeight(160);
-        vBox3.setMaxHeight(160);
-        vBox3.setMaxWidth(valueWidth);
-        vBox3.setMinWidth(valueWidth);
+        VBox vBoxCSSGenResults = new VBox(40);//voor knoppen Driver
+        vBoxCSSGenResults.setMinHeight(350);
+        vBoxCSSGenResults.setMaxHeight(350);
+        vBoxCSSGenResults.setMaxWidth(valueWidth);
+        vBoxCSSGenResults.setMinWidth(valueWidth);
+        vBoxCSSGenResults.setSpacing(5);
+        VBox vBox2OutText2 = new VBox(1);//voor outText2
+        VBox vBox3VarNamesCreator = new VBox(40);//voor knoppen GebSpock
+        vBox3VarNamesCreator.setSpacing(5);
+        vBox3VarNamesCreator.setMinHeight(160);
+        vBox3VarNamesCreator.setMaxHeight(160);
+        vBox3VarNamesCreator.setMaxWidth(valueWidth);
+        vBox3VarNamesCreator.setMinWidth(valueWidth);
         final HBox hBox0switchboxes = new HBox(40);
 
 //--------------------------------
@@ -149,6 +152,16 @@ public class ES3_GUI_JAVA extends Application {
         final TextArea outText2 = new TextArea("Last results:");
         final TextFlow outText3 = new TextFlow();
         outText3.getChildren().add(outText2);
+        final String exampleCodeJava = "//Enter java or groovy code here. Use variable 'output' for returning text. Example:\n" +
+                "output = \"This is example text \\n --------------- \\n\";\n" +
+                "output = output + \"Checking if element is displayed:\\n\" \n" +
+                "output = output + webdriver.findElement(By.id(\"huisnummer\")).isDisplayed();";
+        final TextArea inputTextFieldJava = new TextArea(exampleCodeJava);
+        inputTextFieldJava.setMaxWidth(450);
+        inputTextFieldJava.setMinWidth(450);
+        inputTextFieldJava.setMaxHeight(250);
+        inputTextFieldJava.setMinHeight(250);
+
         final Text textDrivFindElAtt = new Text("Give XPATH to generate CSS:");
         textDrivFindElAtt.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         final TextField inputField01URL = new TextField("https://dmidoffice8.sdmc.ao-srv.com/mp");//switch
@@ -202,7 +215,7 @@ public class ES3_GUI_JAVA extends Application {
                         "partialLinkText",
                         "tagName",
                         "xpath",
-                        "JAVA CODE"
+                        "JAVACODE"
                 );
         final ComboBox comboBoxSelectors = new ComboBox(optionsSelectors);
         comboBoxSelectors.setMaxWidth(150);
@@ -235,17 +248,17 @@ public class ES3_GUI_JAVA extends Application {
 //--------------------------------
         hBox1url.getChildren().addAll(inputField01URL, button01OpenSession, button02CloseSession);
         hBox2genXpathToCss.getChildren().addAll(inputField05css1/*, inputField02css2*/, button03GenerateXpathToCss);
-        vBox1.getChildren().addAll(outputFieldCssTops[0], outputFieldCssTops[1], outputFieldCssTops[2], outputFieldCssTops[3], outputFieldCssTops[4]);
+        vBoxCSSGenResults.getChildren().addAll(outputFieldCssTops[0], outputFieldCssTops[1], outputFieldCssTops[2], outputFieldCssTops[3], outputFieldCssTops[4]);
         hBox3becameVBox.getChildren().addAll(comboBoxSelectors, inputField02UserInputString,/*inputField05gebAction,*/comboBoxActions, inputField03ExtraUserString, hBox5Try);
-        //vBox2.getChildren().add(outText2);
-        vBox2.getChildren().add(outText3);
-        hBox5Try.getChildren().addAll(button11SpockGet, outputFieldResultTry);
-        vBox3.getChildren().addAll(/*hBox5Try,*//*button11SpockGet, outputFieldResultTry,*/ sepHor2, inputField04WishedVarName, outputField1ContentItem, outputField1ActionText);
-        vBox2.setMaxWidth(800);
-        vBox2.setMinWidth(500);
-        vBox2.setMaxHeight(800);
-        vBox2.setMinHeight(800);
-        vBox2.setFillWidth(true);
+        //vBox2OutText2.getChildren().add(outText2);
+        vBox2OutText2.getChildren().add(outText3);
+        hBox5Try.getChildren().addAll(button11TrySelector, outputFieldResultTry);
+        vBox3VarNamesCreator.getChildren().addAll(/*hBox5Try,*//*button11TrySelector, outputFieldResultTry,*/ sepHor2, inputField04WishedVarName, outputField1ContentItem, outputField1ActionText);
+        vBox2OutText2.setMaxWidth(800);
+        vBox2OutText2.setMinWidth(500);
+        vBox2OutText2.setMaxHeight(800);
+        vBox2OutText2.setMinHeight(800);
+        //vBox2OutText2.setFillWidth(true);
         hBox0switchboxes.getChildren().addAll(button12SwitchToZero, button13SwitchToNewForms);
 
 //--------------------------------
@@ -258,8 +271,8 @@ public class ES3_GUI_JAVA extends Application {
 //--------------------------------
 
 
-//        inputField02UserInputString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11SpockGet.fire(); } });
-//        inputField03ExtraUserString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11SpockGet.fire(); } });
+//        inputField02UserInputString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11TrySelector.fire(); } });
+//        inputField03ExtraUserString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11TrySelector.fire(); } });
 //        inputField05css1.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button03GenerateXpathToCss.fire(); } });
 
 
@@ -267,7 +280,7 @@ public class ES3_GUI_JAVA extends Application {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
-                    button11SpockGet.fire();
+                    button11TrySelector.fire();
                 }
             }
         });
@@ -276,7 +289,7 @@ public class ES3_GUI_JAVA extends Application {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
-                    button11SpockGet.fire();
+                    button11TrySelector.fire();
                 }
             }
         });
@@ -354,13 +367,20 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
-        comboBoxActions.setOnAction(new EventHandler<ActionEvent>() {
+        comboBoxSelectors.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
-                    if (comboBoxActions.getValue().toString().contains("STRING")) {
-                        inputField03ExtraUserString.setDisable(false);
+                    if (comboBoxSelectors.getValue().toString().contains("JAVACODE")) {
+
+                        hBox3becameVBox.getChildren().clear();
+                        hBox3becameVBox.getChildren().addAll(comboBoxSelectors,inputTextFieldJava,hBox5Try);
+                        vBox3VarNamesCreator.setVisible(false);
+                        inputTextFieldJava.requestFocus();
                     } else {
-                        inputField03ExtraUserString.setDisable(true);
+                        hBox3becameVBox.getChildren().clear();
+                        hBox3becameVBox.getChildren().addAll(comboBoxSelectors, inputField02UserInputString,/*inputField05gebAction,*/comboBoxActions, inputField03ExtraUserString, hBox5Try);
+                        vBox3VarNamesCreator.setVisible(true);
+                        inputField02UserInputString.requestFocus();
                     }
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -368,12 +388,30 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
-        button11SpockGet.setOnAction(new EventHandler<ActionEvent>() {
+        button11TrySelector.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
                     String requestedAction = comboBoxActions.getValue().toString();
-                    if (comboBoxSelectors.getValue().toString().contains("cssSelector") | comboBoxSelectors.getValue().toString().contains("xpath")) {
-                        inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "'"));
+                    if ((comboBoxSelectors.getValue().toString().contains("cssSelector") | comboBoxSelectors.getValue().toString().contains("xpath")) && !comboBoxSelectors.getValue().toString().contains("\\\"")) {
+
+                        //int count = ;
+
+                        if ((inputField02UserInputString.getText().length() - inputField02UserInputString.getText().replace("'", "").length()) +
+                                (inputField02UserInputString.getText().length() - inputField02UserInputString.getText().replace("\"", "").length()) >= 4) {
+                            inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("([^\\\\])([\"])", "$1\\\\\""));
+                            //int found=-1;
+//                            while((found=inputField02UserInputString.getText().indexOf("\""))>0){
+//                                if(inputField02UserInputString.getText().charAt(found-1)!='\\'){
+//                                    inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("([^\\\\])([\"])","$1\\\\\""));
+//
+//                                }
+//                                //inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "\\\\\""));
+//                            }
+
+                        } else {
+                            inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "'"));
+                        }
+
                         /// System.out.println("AAAAANNNNPAASSEEEENNNNNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         // inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "\\\\\""));
                         // System.out.println("XX");
@@ -385,7 +423,13 @@ public class ES3_GUI_JAVA extends Application {
                     }
 
                     //System.out.println("CHECK01 = " + requestedAction);
-                    String[] result = groovybrowser.doGebSpockActionOnShell(comboBoxSelectors.getValue().toString(), inputField02UserInputString.getText(), requestedAction, inputField04WishedVarName.getText(), "normal");
+                    String result[] = new String[4];
+                    if (!comboBoxSelectors.getValue().toString().equals("JAVACODE")) {
+                        result = groovybrowser.doGebSpockActionOnShell(comboBoxSelectors.getValue().toString(), inputField02UserInputString.getText(), requestedAction, inputField04WishedVarName.getText(), "normal");
+                    } else {
+                        result = groovybrowser.doGebSpockActionOnShell("", inputTextFieldJava.getText(), "", "", "JAVACODE");
+                    }
+
 
                     outputField1ActionText.setText(result[1]);
                     outputField1ContentItem.setText(result[0]);
@@ -407,7 +451,10 @@ public class ES3_GUI_JAVA extends Application {
                             break;
                         case "Exception occurred":
                             outputFieldResultTry.setStyle("-fx-background-color: red;");
-                            outputFieldResultTry.setText("Exception occurred (is Selector correct?)");
+                            if(comboBoxSelectors.getValue().equals("JAVACODE")){
+                                outputFieldResultTry.setText("Exception occurred");
+                            }
+                            else  outputFieldResultTry.setText("Exception occurred (is Selector correct?)");
                             System.out.println("EXCEPTION!!!" + result[3]);
                             break;
                         case "Failed to locate":
@@ -441,6 +488,9 @@ public class ES3_GUI_JAVA extends Application {
                         System.out.println(receivedResults);
                     }
                     if (result[3].equals("Action successful")) {
+                        outText2.setText("buttonHANDLE SLEEPING 500ms");
+                        Thread.sleep(300);
+                        Thread.yield();
                         String[][] generateresult = groovybrowser.generatorXpathToCSS("xpath", inputField05css1.getText(), "getAttribute(\"outerHTML\")", inputField04WishedVarName.getText());
                         System.out.println("RESULTS BELOW FROM GUI:");
                         for (int i = 0; i < generateresult.length - 1; i++) {
@@ -531,28 +581,50 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
+        /*  https://stackoverflow.com/questions/44060204/javafx-label-will-not-continuously-update*/
+//        Label timerLabel = new Label();
+//        final Timer timer = new Timer();
+//        final int[] count = {0};
+//        timer.schedule(new TimerTask() { // timer task to update the seconds
+//            @Override
+//            public void run() {
+//                // use Platform.runLater(Runnable runnable) If you need to update a GUI component from a non-GUI thread.
+//                Platform.runLater(new Runnable() {
+//                    public void run() {
+//                        timerLabel.setText("Second : " + count[0]);
+//                        count[0]++;
+//                        if (count[0] >= 10) {
+//                            timer.cancel();
+//                        }
+//                    }
+//                });
+//            }
+//        }, 1000, 1000); //Every 1 second
+
+
 /**
  * Setting content of grids
  *
  */
         int grid1leftcounter = 0;
-        grid1.add(vBox5, 0, grid1leftcounter++);//groovyshell
         grid1.add(hBox1url, 0, grid1leftcounter++);//url conn
+        grid1.add(vBox2OutText2, 1, 0, 1, 25);//was 1 0 1 25
         grid1.add(hBox0switchboxes, 0, grid1leftcounter++);//url conn
-
         grid1.add(sepHor1, 0, grid1leftcounter++);
         grid1.add(hBox3becameVBox, 0, grid1leftcounter++);
-        grid1.add(vBox3, 0, grid1leftcounter++);
+        grid1.add(vBox3VarNamesCreator, 0, grid1leftcounter++);
         grid1.add(sepHor5, 0, grid1leftcounter++);
         grid1.add(sepHor6, 0, grid1leftcounter++);
         grid1.add(textDrivFindElAtt, 0, grid1leftcounter++);
         grid1.add(hBox2genXpathToCss, 0, grid1leftcounter++);
-        grid1.add(vBox2, 1, 0, 1, 25);
-        grid1.add(vBox1, 0, grid1leftcounter);
+        grid1.add(vBoxCSSGenResults, 0, grid1leftcounter);
         primStage.setScene(sceneManualDrive);
         primStage.getScene().fillProperty();
         primStage.show();
         button01OpenSession.fire();//auto start open url browser
+
+
+
     }
 
     public static void main(String[] args) {
