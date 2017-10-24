@@ -63,7 +63,7 @@ public class ES3_GUI_JAVA extends Application {
 //---------------------------------
         Button button01OpenSession = new Button("Open session URL");//button01OpenSession
         Button button02CloseSession = new Button("Close session");
-        final Button button03GenerateXpathToCss = new Button("TRY!");
+        final Button button03TryGenerateXpathToCss = new Button("TRY!");
         //Button button04MouseOver = new Button("MouseOver");
         //Button button05InfoAttribute = new Button("Attribute info");
         //Button button06MouseClick = new Button("MouseClick");
@@ -247,7 +247,7 @@ public class ES3_GUI_JAVA extends Application {
 
 //--------------------------------
         hBox1url.getChildren().addAll(inputField01URL, button01OpenSession, button02CloseSession);
-        hBox2genXpathToCss.getChildren().addAll(inputField05css1/*, inputField02css2*/, button03GenerateXpathToCss);
+        hBox2genXpathToCss.getChildren().addAll(inputField05css1/*, inputField02css2*/, button03TryGenerateXpathToCss);
         vBoxCSSGenResults.getChildren().addAll(outputFieldCssTops[0], outputFieldCssTops[1], outputFieldCssTops[2], outputFieldCssTops[3], outputFieldCssTops[4]);
         hBox3becameVBox.getChildren().addAll(comboBoxSelectors, inputField02UserInputString,/*inputField05gebAction,*/comboBoxActions, inputField03ExtraUserString, hBox5Try);
         //vBox2OutText2.getChildren().add(outText2);
@@ -273,7 +273,7 @@ public class ES3_GUI_JAVA extends Application {
 
 //        inputField02UserInputString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11TrySelector.fire(); } });
 //        inputField03ExtraUserString.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button11TrySelector.fire(); } });
-//        inputField05css1.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button03GenerateXpathToCss.fire(); } });
+//        inputField05css1.setOnKeyPressed((event) -> { if(event.getCode() == KeyCode.ENTER) { button03TryGenerateXpathToCss.fire(); } });
 
 
         inputField02UserInputString.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -298,7 +298,7 @@ public class ES3_GUI_JAVA extends Application {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
-                    button03GenerateXpathToCss.fire();
+                    button03TryGenerateXpathToCss.fire();
                 }
             }
         });
@@ -388,6 +388,7 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
+
         button11TrySelector.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
@@ -411,6 +412,11 @@ public class ES3_GUI_JAVA extends Application {
                         } else {
                             inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "'"));
                         }
+
+                        if(inputField02UserInputString.getText().contains("$")&& !inputField02UserInputString.getText().contains("\\$")){
+                            inputField02UserInputString.setText(inputField02UserInputString.getText().replace("($", "(\\$")); //WORKS BUT ONLY ONE TIME
+                        }
+
 
                         /// System.out.println("AAAAANNNNPAASSEEEENNNNNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         // inputField02UserInputString.setText(inputField02UserInputString.getText().replaceAll("\"", "\\\\\""));
@@ -473,13 +479,28 @@ public class ES3_GUI_JAVA extends Application {
             }
         });
 
-
-        button03GenerateXpathToCss.setOnAction(new EventHandler<ActionEvent>() {
+        button03TryGenerateXpathToCss.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
+//                class GreyWaiter implements Runnable{
+//                    boolean working;
+//                    private GreyWaiter(boolean working){
+//                        this.working=working;
+//                    }
+//                    public void run(){
+//                        System.out.println("CHECK11: IM CHANGING WAITING TO "+ working);
+//                        button03TryGenerateXpathToCss.setDisable(working);
+//                        button03TryGenerateXpathToCss.setText("===");
+//                    }
+//                }
+//
+//                Thread tx =new Thread(new GreyWaiter(true));
+//                tx.setDaemon(true);
+//                Platform.runLater(tx);
+                //new Thread(new GreyWaiter(true)).start();
+
                 outText2.setText("");
                 for (int i = 0; i < outputFieldCssTops.length; i++) {
                     outputFieldCssTops[i].setText("?");
-
                 }
                 try {
                     inputField05css1.setText(inputField05css1.getText().replaceAll("\"", "'"));
@@ -498,7 +519,9 @@ public class ES3_GUI_JAVA extends Application {
                         }
                         outText2.setText("Results for generating Xpath to CSS:");
                         int topCounter = 0;
+                        System.out.println("LENGTE1 HIER IS : = "+generateresult.length);
                         for (int i = 0; i < generateresult.length - 1; i++) {
+                            System.out.println("LENGTE3 HIER IS : "+i);
                             if (generateresult[i][1].equals("Action successful") && generateresult[i][2].equals("1") && topCounter < outputFieldCssTops.length) {
                                 outputFieldCssTops[topCounter++].setText(generateresult[i][0]);
                             }
@@ -514,14 +537,16 @@ public class ES3_GUI_JAVA extends Application {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+               // new Thread(new GreyWaiter(false)).start();
             }
         });
+
+
 
         button12SwitchToZero.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
                     String[] result = groovybrowser.doGebSpockActionOnShell("", "", "", "", "switchToZero");
-
                     switch (result[3]) {
                         case "Action successful":
                             outputFieldResultTry.setStyle("-fx-background-color: green;");
@@ -580,6 +605,9 @@ public class ES3_GUI_JAVA extends Application {
                 }
             }
         });
+
+
+
 
         /*  https://stackoverflow.com/questions/44060204/javafx-label-will-not-continuously-update*/
 //        Label timerLabel = new Label();

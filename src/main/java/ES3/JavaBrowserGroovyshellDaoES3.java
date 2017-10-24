@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.File;
 //import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,7 +94,7 @@ public class JavaBrowserGroovyshellDaoES3 {
             shell.evaluate(scriptTotal);
             System.out.println(shellReturnString01 + "CHECK05");
             returnvalue[2] = shellReturnString01;
-            returnvalue[0] = "@FindBy(" + bystring + " = \"" + selectorString + "\")\n" +
+            returnvalue[0] = "@FindBy(" + (bystring.equals("cssSelector")?"css":bystring) + " = \"" + selectorString + "\")\n" +
                     "public WebElement " + contentNameString + ";";
             returnvalue[1] = scriptMid; //india style
             returnvalue[1] = "xPage." + contentNameString + "." + actionstring;
@@ -140,74 +141,101 @@ public class JavaBrowserGroovyshellDaoES3 {
         while (m.find()) {
             if (!(m.group().contains("class=") && (m.group().contains("ng-untouched") || m.group().contains("ng-touched") || m.group().contains("ng-pristine") || m.group().contains("ng-dirty") || m.group().contains("ng-invalid") || m.group().contains("ng-invalid")))) {
                 String newPart = m.group();
-                System.out.println("NEWPART=   "+newPart);
-                if ((newPart.length() - newPart.replace("'", "").length()) +                         (newPart.length() - newPart.replace("\"", "").length()) >= 4) {
+                System.out.println("NEWPART=   " + newPart);
+                if ((newPart.length() - newPart.replace("'", "").length()) + (newPart.length() - newPart.replace("\"", "").length()) >= 4) {
                     System.out.println("NEWPART>4CHARS!");
                     newPart = newPart.replaceAll("([^\\\\])([\"])", "$1\\\\\"");
-                    System.out.println("NEWPART:      "+newPart);
-                }
-                else{
+                    System.out.println("NEWPART:      " + newPart);
+                } else {
                     newPart = newPart.replaceAll("\"", "'");
                 }
                 System.out.println("ADDING NEWPART=   ");
-                    //parts.add(m.group());
+                //parts.add(m.group());
                 parts.add(newPart);
-                }
             }
-            System.out.println(parts.toString());
-            System.out.println("Total size parts = " + parts.size());
-            List<String> binList = new ArrayList<>();
-            int amountElements = parts.size();
-            int totalCombinations = (int) Math.pow(2, amountElements);
-            System.out.println("totalCombinations = " + totalCombinations);
-            for (int i = totalCombinations - 1; i >= 0; i--) {
-                System.out.println(" i = " + i);
-                binList.add(String.format("%0" + amountElements + "d", Integer.parseInt(Integer.toBinaryString(i))));
-            }
+        }
+        System.out.println(parts.toString());
+        System.out.println("Total size parts = " + parts.size());
+        List<String> binList = new ArrayList<>();
+        int amountElements = parts.size();
+        int totalCombinations = (int) Math.pow(2, amountElements);
+        System.out.println("totalCombinations = " + totalCombinations);
+       /* for (int i = totalCombinations - 1; i >= 0; i--) {
+            System.out.println(" i = " + i);
+            binList.add(String.format("%0" + amountElements + "d", Integer.parseInt(Integer.toBinaryString(i))));
+        }*///TODO DIT WAS PERFECT VAN 1111111111 naar 00000000
+        int MAXRESULTS=0;
 
-            String allCssCombinations[][] = new String[binList.size()][3];//[0] is the complete css  [1]is result fail/succes/excep 3=size
-            try {
-                System.out.println("totalCombinations size " + totalCombinations);
-                for (int x = 0; x < totalCombinations - 1; x++) {//last value is 00000 so that's why totalcombinations-1
-                    StringBuilder newString = new StringBuilder(tagElement);
-                    System.out.println("amountElements = " + amountElements);
-                    for (int i = 0; i < amountElements; i++) {
-                        if (binList.get(x).charAt(i) == '1') {
-                            newString.append("[").append(parts.get(i)).append("]");
-                        }
+
+        //---
+        try{
+            File currentWorkPath = new File(".").getCanonicalFile();
+            File resourcePath = new File(currentWorkPath + "/resources/settings.properties");
+            if (!resourcePath.exists()) {
+                resourcePath = new File(currentWorkPath + "/src/test/resources/settings.properties");
+            }
+            Properties propertiesConnection = new Properties();
+            propertiesConnection.load(new FileInputStream(resourcePath));
+            MAXRESULTS = Integer.parseInt(propertiesConnection.getProperty("maxresults"));
+            //groovybrowser.doGebSpockActionOnShell("id", "username", "sendKeys(\"" + propertiesConnection.getProperty("username") + "\")", inputField04WishedVarName.getText(), "normal");
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        //---
+
+
+
+        for (int i = 1;i< totalCombinations &&i<MAXRESULTS+2 ; i++) {
+            System.out.println(" i = " + i);
+            binList.add(String.format("%0" + amountElements + "d", Integer.parseInt(Integer.toBinaryString(i))));
+        }
+        System.out.println("LENGTE2 HIER IS : = "+binList.size());
+        String allCssCombinations[][] = new String[binList.size()][3];//[0] is the complete css  [1]is result fail/succes/excep 3=size
+        try {
+            System.out.println("totalCombinations size " + totalCombinations);
+           // for (int x = 0; x < totalCombinations - 1; x++) {//last value is 00000 so that's why totalcombinations-1
+            for (int x = 0; x < allCssCombinations.length ; x++) {//last value is 00000 so that's why totalcombinations-1
+                StringBuilder newString = new StringBuilder(tagElement);
+                System.out.println("amountElements = " + amountElements);
+                for (int i = 0; i < amountElements; i++) {
+                    if (binList.get(x).charAt(i) == '1') {
+                        newString.append("[").append(parts.get(i)).append("]");
                     }
-                    allCssCombinations[x][0] = newString.toString();
-                    System.out.println("allCssCombinations size=" + allCssCombinations.length);
-                    System.out.println("NEWSTRING = " + newString);
                 }
+                allCssCombinations[x][0] = newString.toString();
+                System.out.println("allCssCombinations size=" + allCssCombinations.length);
+                System.out.println("NEWSTRING = " + newString);
+            }
 
 
-                for (int i = 0; i < allCssCombinations.length - 1; i++) {
+            for (int i = 0; i < allCssCombinations.length - 1; i++) {
 
-                    System.out.println("\n-NEW ATTEMPT i = " + i + "----------------------------------------------------------------------------------------\n");
-                    String cssTry = allCssCombinations[i][0];
-                    cssTry = cssTry.replace("$", "\\$");
-                    System.out.println(cssTry);
-                    Integer teller = Integer.parseInt(doGebSpockActionOnShell("cssSelector", cssTry, "size()", "", "findElements")[2]);
-                    System.out.println(teller == 0 ? "Found 0 items" : teller == 1 ? "Found 1 item" : teller > 1 ? "Found more than 1" : "Something strange happened not 0,1,>1");
+                System.out.println("\n-NEW ATTEMPT i = " + i + "----------------------------------------------------------------------------------------\n");
+                String cssTry = allCssCombinations[i][0];
+                cssTry = cssTry.replace("$", "\\$");
+                System.out.println(cssTry);
+                Integer teller = Integer.parseInt(doGebSpockActionOnShell("cssSelector", cssTry, "size()", "", "findElements")[2]);
+                System.out.println(teller == 0 ? "Found 0 items" : teller == 1 ? "Found 1 item" : teller > 1 ? "Found more than 1" : "Something strange happened not 0,1,>1");
 
-                    String result[] = doGebSpockActionOnShell("cssSelector", cssTry, "getAttribute(\"outerHTML\")", "x", "normalShell");
-                    allCssCombinations[i][1] = result[3];
-                    allCssCombinations[i][2] = "" + teller;
-                    System.out.println(result[0]);
-                    System.out.println(result[1]);
-                    System.out.println(result[2]);
-                    System.out.println(result[3]);
-                }
+                String result[] = doGebSpockActionOnShell("cssSelector", cssTry, "getAttribute(\"outerHTML\")", "x", "normalShell");
+                allCssCombinations[i][1] = result[3];
+                allCssCombinations[i][2] = "" + teller;
+                System.out.println(result[0]);
+                System.out.println(result[1]);
+                System.out.println(result[2]);
+                System.out.println(result[3]);
+            }
 //            while(outerHTML.length()>0){
 //                int firstQuotation = outerHTML.indexOf("\"");
 //                int secondQuotation = outerHTML.indexOf("\"",firstQuotation);
 //                String foundPart = outerHTML.substring(0,outerHTML.indexOf("\"",firstQuotation));
 //            }
 
-                for (int i = 0; i < allCssCombinations.length - 1; i++) {
-                    System.out.printf("%s   %s\n", allCssCombinations[i][0], allCssCombinations[i][1]);
-                }
+            for (int i = 0; i < allCssCombinations.length - 1; i++) {
+                System.out.printf("%s   %s\n", allCssCombinations[i][0], allCssCombinations[i][1]);
+            }
 //            returnvalue[2] = shellReturnString01;
 //            returnvalue[0] = "@FindBy(" + bystring + " = \"" + selectorString + "\")\n" +
 //                    "public WebElement " + contentNameString + ";";
@@ -215,25 +243,26 @@ public class JavaBrowserGroovyshellDaoES3 {
 //
 //            returnvalue[3] = "hallo"; //voor scenetitle2
 
-                System.out.println("Reached END");
-            } catch (IndexOutOfBoundsException ex) {
-                System.out.println(ex.getMessage());
-            } catch (Exception e) {
-                System.out.println("EXC:" + e.getMessage());
-                e.printStackTrace();
-                returnvalue[2] = e.getMessage();
-                if (returnvalue[2].contains("no such element: Unable to locate element")) {
-                    returnvalue[3] = "Failed to locate";
-                } else returnvalue[3] = "Exception occurred";
-                if (returnvalue[2].contains("Cannot invoke method getDriver() on null object")) {
-                    returnvalue[2] = returnvalue[2] + " (Browser session is not started!).";
-                }
-                //return returnvalue;
+            System.out.println("Reached END");
+        } catch (IndexOutOfBoundsException ex) {
+            System.out.println(ex.getMessage());
+        } catch (Exception e) {
+            System.out.println("EXC:" + e.getMessage());
+            e.printStackTrace();
+            returnvalue[2] = e.getMessage();
+            if (returnvalue[2].contains("no such element: Unable to locate element")) {
+                returnvalue[3] = "Failed to locate";
+            } else returnvalue[3] = "Exception occurred";
+            if (returnvalue[2].contains("Cannot invoke method getDriver() on null object")) {
+                returnvalue[2] = returnvalue[2] + " (Browser session is not started!).";
             }
-            returnvalue[3] = "Action successful";
             //return returnvalue;
-            return allCssCombinations;
         }
+        System.out.println("LENGTE4 HIER IS : = "+allCssCombinations.length);
+        returnvalue[3] = "Action successful";
+        //return returnvalue;
+        return allCssCombinations;
+    }
 
     static void stopSeleniumConnection() throws Exception {
         browser2.close();
