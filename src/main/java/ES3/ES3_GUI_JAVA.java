@@ -208,7 +208,8 @@ public class ES3_GUI_JAVA extends Application {
                         "partialLinkText",
                         "tagName",
                         "xpath",
-                        "JAVACODE"
+                        "JAVACODE_MAIN",
+                        "JAVACODE_FULL"
                 );
         final ComboBox<String> comboBoxSelectors = new ComboBox<>(optionsSelectors);
         comboBoxSelectors.setMaxWidth(150);
@@ -345,7 +346,7 @@ public class ES3_GUI_JAVA extends Application {
         comboBoxSelectors.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 try {
-                    if (comboBoxSelectors.getValue().toString().contains("JAVACODE")) {
+                    if (comboBoxSelectors.getValue().toString().contains("JAVACODE_MAIN")||comboBoxSelectors.getValue().toString().contains("JAVACODE_FULL")) {
 
                         hBox3becameVBox.getChildren().clear();
                         hBox3becameVBox.getChildren().addAll(comboBoxSelectors, inputTextFieldJava, hBox5Try);
@@ -383,10 +384,10 @@ public class ES3_GUI_JAVA extends Application {
                         requestedAction = requestedAction.replace("STRING", inputField03ExtraUserString.getText());
                     }
                     String result[] = new String[4];
-                    if (!comboBoxSelectors.getValue().equals("JAVACODE")) {
+                    if (!(comboBoxSelectors.getValue().equals("JAVACODE_MAIN")||comboBoxSelectors.getValue().equals("JAVACODE_FULL"))) {
                         result = groovybrowser.doGebSpockActionOnShell(comboBoxSelectors.getValue(), inputField02UserInputString.getText(), requestedAction, inputField04WishedVarName.getText(), "normal");
                     } else {
-                        result = groovybrowser.doGebSpockActionOnShell("", inputTextFieldJava.getText(), "", "", "JAVACODE");
+                        result = groovybrowser.doGebSpockActionOnShell("", inputTextFieldJava.getText(), "", "", comboBoxSelectors.getValue());
                     }
                     outputField1ActionText.setText(result[1]);
                     outputField1ContentItem.setText(result[0]);
@@ -567,7 +568,7 @@ public class ES3_GUI_JAVA extends Application {
         primStage.getScene().fillProperty();
 
         primStage.show();
-        button01OpenSession.fire();//auto start open url browser
+        //button01OpenSession.fire();//auto start open url browser
     }
 
     static Properties loadProperties(){

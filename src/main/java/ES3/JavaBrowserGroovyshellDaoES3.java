@@ -1,5 +1,6 @@
 package ES3;
 
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +22,7 @@ import groovy.lang.GroovyShell;
 
 public class JavaBrowserGroovyshellDaoES3 {
     static String baseUrl;
-    static Browser browser2;
+    public static Browser browser2;
     private static StringBuffer verificationErrors = new StringBuffer();
     public static String shellReturnString01;
 
@@ -42,7 +43,7 @@ public class JavaBrowserGroovyshellDaoES3 {
             System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
         }
         final Map<String, Object> prefs = new HashMap();
-        prefs.put("intl.accept_languages", "nl");
+        prefs.put("intl.accept_languages", "en");
         chromeoptions.setExperimentalOption("prefs", prefs);
         Map<String, Object> newmap = new TreeMap<>();
         newmap.put("driver", new ChromeDriver(chromeoptions));
@@ -77,16 +78,27 @@ public class JavaBrowserGroovyshellDaoES3 {
                         "final String secondWindowHndl=(String) it.next();" +
                         "gb.browser2.getDriver().switchTo().window(secondWindowHndl);\n");
             }
-            if (shellChooseMid.equals("JAVACODE")) {
+            if (shellChooseMid.equals("JAVACODE_MAIN")) {
                 scriptMid = new String("JavaBrowserGroovyshellDaoES3 gb = new JavaBrowserGroovyshellDaoES3(\"x\");WebDriver webdriver =gb.browser2.getDriver();  String output = new String(); " + selectorString + " \ngb.shellReturnString01 = output;");
             }
+
             scriptEnd = new String("}}");
 
+            if (shellChooseMid.equals("JAVACODE_FULL")) {
+                scriptBegin="";
+                scriptMid = selectorString;
+                scriptEnd ="";
+            }
             if(ES3_GUI_JAVA.loggingConsoleOutput)System.out.println("Complete script\n-------------\n" + scriptBegin + scriptMid + scriptEnd + "\n----------------");
             String scriptTotal = scriptBegin + scriptMid + scriptEnd;
             Binding binding = new Binding();
+            StringWriter stringWriter = new StringWriter();
+
+            binding.setProperty("out", stringWriter);
             GroovyShell shell = new GroovyShell(binding);
-            shell.evaluate(scriptTotal);
+            System.out.println("Check01");
+            String stringX = (String)shell.evaluate(scriptTotal);
+            System.out.println("stringX gives:\n"+stringWriter.toString());
 
             returnvalue[0] = "@FindBy(" + (bystring.equals("cssSelector") ? "css" : bystring) + " = \"" + selectorString + "\")\n" +
                     "public WebElement " + contentNameString + ";";

@@ -30,7 +30,7 @@ public class TestJava {
         System.out.println(parts.toString());
         System.out.println(parts.size());
 
-        outerHTML = outerHTML.replace("$", "\\"+"$");
+        outerHTML = outerHTML.replace("\\$5", "\\"+"\\$5");
         System.out.println(outerHTML);
 
         List<String> binList = new ArrayList<>();
