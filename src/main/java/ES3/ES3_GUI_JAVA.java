@@ -36,6 +36,10 @@ import javafx.stage.Stage;
 /**
  * This is EsuiteScanner 3.3
  * Author: Emiel Thomassen
+ *
+ * idea for cucumber: index all feature and spec/pageobjects, create 3 new files with all in it, execute,
+ * show errors, give break buttons to run testcase to problem. let try repair, push repair, continue(, restart)
+ *
  */
 
 public class ES3_GUI_JAVA extends Application {
